@@ -1,0 +1,27 @@
+#The app.yaml file describes the app's deployment configuration.
+
+runtime: python
+env: flex
+entrypoint: gunicorn -b:$PORT main:app
+
+runtime_config:
+  python_version: 3
+
+handlers:
+- url: /static
+  static_dir: static
+- url: /.*
+  script: main.app
+
+#Setting the enrivonmental variables to connect the main.py file to the Cloud SQL instance.
+
+env_variables:
+  DB_USER: root
+  DB_PASS: root
+  DB_NAME: dcmetrodata
+  SQLALCHEMY_DATABASE_URI: >-
+      mysql+pymysql://root:root@/dcmetrodata?unix_socket=/cloudsql/dc-metro-analysis:us-east4:dcmetro
+
+beta_settings:
+  cloud_sql_instances: dc-metro-analysis:us-east4:dcmetro
+
